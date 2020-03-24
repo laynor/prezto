@@ -1,3 +1,4 @@
+# -*- mode: shell-script -*-
 #
 # Executes commands at the start of an interactive session.
 #
@@ -6,8 +7,77 @@
 #
 
 # Source Prezto.
-if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
-  source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
-fi
+# if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
+#   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
+# fi
 
+# load zgen
+source "${HOME}/.zgen/zgen.zsh"
+# if the init script doesn't exist
+if ! zgen saved; then
+  zgen prezto
+  zgen prezto environment
+  zgen prezto terminal
+  zgen prezto editor
+  zgen prezto history
+  zgen prezto archive
+  zgen prezto directory
+  zgen prezto spectrum
+  zgen prezto utility
+  zgen prezto completion
+  zgen prezto prompt
+  zgen prezto command-not-found
+  zgen prezto fasd
+  zgen prezto autosuggestions
+
+  zgen prezto editor key-bindings vim
+
+  zgen prezto syntax-highlighting
+  MYHIGHLIGHTERS=('pattern' 'brackets' 'main' 'line' 'cursor' 'root')
+  zgen prezto 'syntax-highlighting' highlighters $MYHIGHLIGHTERS
+
+  MYSTYLES=('function' 'fg=cyan' 'command' 'fg=green' 'builtin' 'fg=white' )
+  zgen prezto 'syntax-highlighting' styles $MYSTYLES
+
+  zgen prezto 'syntax-highlighting' pattern \
+       'rm*-rf*' 'fg=white,bold,bg=red'
+
+
+  # generate the init script from plugins above
+  zgen save
+fi
 # Customize to your needs...
+
+
+# Only load Liquid Prompt in interactive shells, not from a script or from scp
+[[ $- = *i* ]] && source ~/.liquidprompt/liquidprompt
+alias l='exa'
+alias ll='exa -l'
+alias la='exa -la'
+alias dpigs='pacman -Qi $(pacman -Qq)|grep '"'"'Name\|Size'"'"'| cut -d: -f2 | paste - - | column -t | sort -nk2 | grep MiB'
+alias z='fasd_cd -d'
+alias v='fasd -f -e vim'
+
+if [ -x ~/.ciaoroot/master/build/bin/ciao-env  ]; then
+	eval "$(~/.ciaoroot/master/build/bin/ciao-env --sh)"
+fi
+export PATH=~/.dotnet/:$PATH
+
+# @begin(57057414)@ - Do not edit these lines - added automatically!
+# You should customize CIAOPATH before this chunk if you place bundles in
+# places other than ~/.ciao
+if [ -x /home/ale/.ciaoroot/master/build/bin/ciao-env ] ; then
+  eval "$(/home/ale/.ciaoroot/master/build/bin/ciao-env --sh)"
+fi
+# @end(57057414)@ - End of automatically added lines.
+
+export PATH=$HOME/.nodebrew/current/bin:$PATH
+export PATH=$HOME/.roswell/bin:$PATH
+export PATH=/opt/mdyalog/17.1/64/unicode/:$PATH
+
+source /home/ale/.config/broot/launcher/bash/br
+
+export CARP_DIR=$HOME/src/3rdparty/Carp
+export PATH=$HOME/.local/bin:$PATH
+
+alias clientjson='sed "$d" | python -m json.tool'
